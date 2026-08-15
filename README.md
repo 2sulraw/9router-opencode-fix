@@ -65,6 +65,28 @@ chmod +x fix-9router.sh
 
 Then **restart 9Router** (the chunk is loaded at startup).
 
+### Docker container
+
+If you run 9Router in a container (`decolua/9router:latest`), the npm scripts
+above won't find your install — the image serves a pre-compiled Next standalone
+bundle, not the npm layout. Use **`fix-9router-docker.sh`** instead, which
+patches the compiled executor chunk directly inside the running container:
+
+```sh
+chmod +x fix-9router-docker.sh
+./fix-9router-docker.sh          # patches container named "9router"
+./fix-9router-docker.sh myname    # or pass a different container name/id
+```
+
+It backs up the chunk to `318.js.bak`, aborts if the buildHeaders signature
+doesn't match (version changed), validates syntax with `node --check`, and
+restarts the container when done.
+
+> The container filesystem is ephemeral — `docker compose down` / `docker compose up`
+> (recreate) wipes the patch. Re-run the script after each recreate, or bind-mount
+> the patched chunk (e.g. `-v ./318.js:/app/.next/server/chunks/318.js:ro`) for
+> persistence.
+
 ### On another machine / fresh install
 
 Requirements:
@@ -96,6 +118,7 @@ Requirements:
 | `fix-9router.ps1` | Patch logic (Windows) |
 | `fix-9router.bat` | One-click launcher for the .ps1 (Windows) |
 | `fix-9router.sh` | Same fix as a bash script (Linux / macOS / Windows Git Bash) |
+| `fix-9router-docker.sh` | Patches the compiled executor chunk inside a running Docker container |
 
 ## Troubleshooting
 
