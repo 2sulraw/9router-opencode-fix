@@ -1,4 +1,4 @@
-# 9Router "Free usage exceeded" Fix
+# 9Router "Free usage exceeded" Fix "OutDated"
 
 Patches 9Router's compiled opencode free executor so anonymous free requests carry
 the client identity headers the real opencode CLI sends. Without them, requests land
